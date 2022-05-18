@@ -1,33 +1,60 @@
 package stats;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Scanner;
+
 public class Main {
+    static final Scanner s = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println(normalcdf());
+        normalcdf();
     }
 
-    public static int factorial(int i) {
-        if (i < 2) return 1;
-        return i*factorial(i-1);
+    public static BigDecimal factorial(BigDecimal i) {
+        if (i.compareTo(BigDecimal.valueOf(2)) < 0) return BigDecimal.ONE;
+        return i.multiply(factorial(i.subtract(BigDecimal.ONE)));
     }
 
-    public static double normalcdf() {
-        //get variables
-        double lower = -40;
-        double upper = 40.0;
-        double mean = 0;
-        double sd = 20;
-        return normalcdf(upper, mean, sd) - normalcdf(lower, mean, sd);
+    //Dialogue for normalcdf() function
+    public static void normalcdf() {
+        System.out.print("Mean: ");
+        double mean = s.nextDouble();
+        System.out.print("SD: ");
+        double sd = s.nextDouble();
+        System.out.print("Lower: ");
+        double lower = s.nextDouble();
+        System.out.print("Upper: ");
+        double upper = s.nextDouble();
+        System.out.println();
+
+        double lowerzval = (lower - mean)/sd;
+        double upperzval = (upper - mean)/sd;
+
+        double l = 7.2; //experimental
+        if (lowerzval < -l) lowerzval = -l;
+        if (lowerzval > l) lowerzval = l;
+        if (upperzval < -l) upperzval = -l;
+        if (upperzval > l) upperzval = l;
+
+        System.out.println("Area: " + normalcdf(upperzval).subtract(normalcdf(lowerzval)));
     }
 
-    public static double normalcdf(double upper, double mean, double sd) {
-        double zval = (upper - mean) / sd;
-        double sum = 0;
-        double delta = 1;
+    //Calculates area from center of the standardized normal curve to the given zval
+    public static BigDecimal normalcdf(double zval) {
+        final MathContext c = new MathContext(16, RoundingMode.DOWN);
+        final BigDecimal errorBound = BigDecimal.valueOf(0.00000001);
+        final double root2pi = Math.sqrt(2*Math.PI);
 
-        for (int n = 0; Math.abs(delta)>=0.000001; n++) {
-            delta = (Math.pow(-0.5, n) * Math.pow(zval, 2*n + 1)) / (factorial(n) * Math.sqrt(2*Math.PI) * (2*n + 1));
-            sum += delta;
+        BigDecimal delta = new BigDecimal(1);
+        BigDecimal sum = new BigDecimal(0);
+
+        //Taylor series approximation
+        for (short n = 0; delta.abs().compareTo(errorBound) > 0; n++) {
+            delta = BigDecimal.valueOf(-0.5).pow(n).multiply(BigDecimal.valueOf(zval).pow(2*n + 1))
+                    .divide(factorial(BigDecimal.valueOf(n)).multiply(BigDecimal.valueOf(root2pi * (2*n + 1))), c);
+            sum = sum.add(delta);
         } return sum;
     }
 }
