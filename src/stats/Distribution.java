@@ -49,12 +49,6 @@ public class Distribution extends CalculatorFolder {
         double lowerzval = (lower - mean)/sd;
         double upperzval = (upper - mean)/sd;
 
-        double l = 7.2; //experimental
-        if (lowerzval < -l) lowerzval = -l;
-        if (lowerzval > l) lowerzval = l;
-        if (upperzval < -l) upperzval = -l;
-        if (upperzval > l) upperzval = l;
-
         long taylorStart = System.currentTimeMillis();
         System.out.println("Area: " + normalcdf(lowerzval, upperzval));
         long taylorRuntime = System.currentTimeMillis()-taylorStart;
@@ -72,6 +66,7 @@ public class Distribution extends CalculatorFolder {
 
     //Calculates area from center of the standardized normal curve to the given z-value
     public static BigDecimal normalcdf(double zval) {
+        if (Math.abs(zval) > 7.2) zval = Math.signum(zval) * 7.2;
         final MathContext c = new MathContext(16, RoundingMode.DOWN);
         final BigDecimal errorBound = BigDecimal.valueOf(0.00000001);
         final double root2pi = Math.sqrt(2*Math.PI);
