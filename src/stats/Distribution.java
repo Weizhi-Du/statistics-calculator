@@ -56,17 +56,19 @@ public class Distribution extends CalculatorFolder {
         if (upperzval > l) upperzval = l;
 
         long taylorStart = System.currentTimeMillis();
-        System.out.println("Area: " + normalcdf(upperzval).subtract(normalcdf(lowerzval)));
+        System.out.println("Area: " + normalcdf(lowerzval, upperzval));
         long taylorRuntime = System.currentTimeMillis()-taylorStart;
 
         long riemannStart = System.currentTimeMillis();
-        System.out.println("Riemann Area: " + (normalcdf2(upperzval) - normalcdf2(lowerzval)));
+        System.out.println("Riemann Area: " + normalcdf2(lowerzval, upperzval));
         long riemannRuntime = System.currentTimeMillis()-riemannStart;
 
         System.out.println("Taylor Series Approximation Time: " + taylorRuntime + "ms");
         System.out.println("Riemann Sum Approximation Time: " + riemannRuntime + "ms");
         System.out.println();
     }
+
+    public static BigDecimal normalcdf(double lowerz, double upperz) { return normalcdf(upperz).subtract(normalcdf(lowerz)); }
 
     //Calculates area from center of the standardized normal curve to the given z-value
     public static BigDecimal normalcdf(double zval) {
@@ -84,6 +86,8 @@ public class Distribution extends CalculatorFolder {
             sum = sum.add(delta);
         } return sum;
     }
+
+    public static double normalcdf2(double lowerz, double upperz) { return normalcdf2(upperz) - normalcdf2(lowerz); }
 
     //normalcdf() but faster using a Riemann sum
     public static double normalcdf2(double zval) {

@@ -1,7 +1,58 @@
 package stats;
 
+import java.lang.Math;
+import java.util.Scanner;
+
+import static stats.Distribution.normalcdf;
+
+
 public class Tests extends CalculatorFolder {
+	static final Scanner s = new Scanner(System.in);
 
-    public static void dialogue() {}
+	public static void dialogue() {
+		System.out.println("1: one_prop_z_test");
+		int f = s.nextInt();
+        System.out.println();
 
+		switch (f) {
+			case 1: one_prop_z_test(); break;
+			default:
+				System.out.println("Invalid Selection");
+				dialogue();
+		}
+	}
+
+	private static void one_prop_z_test() {
+		System.out.print("p0: ");
+		double p0 = s.nextDouble();
+		System.out.print("x: ");
+		double x = s.nextDouble();
+		System.out.print("n: ");
+		double n = s.nextDouble();
+		System.out.print("Alternative Hypothesis: (prop<p0 enter '-1'; prop>p0 enter '1'; prop≠p0 enter '0') ");
+		int altHypo = s.nextInt();
+		System.out.println();
+
+		one_prop_z_test(p0, x, n, altHypo);
+	}
+
+	public static void one_prop_z_test(double p0, double x, double n, double altHypo) {
+		double p_hat = x / n;
+		double sd = Math.sqrt(p0 * (1 - p0) / n);
+		double z = (p_hat - p0) / sd;
+
+		double p_value = 0;
+		if (altHypo == -1) {
+			p_value = normalcdf(-100, z).doubleValue(); //TODO
+		}
+		if (altHypo == 1) {
+			p_value = normalcdf(z, 100).doubleValue();
+		}
+		else {
+			p_value = (normalcdf(-100, -z).add(normalcdf(z, 100))).doubleValue(); //TODO
+		}
+
+		System.out.println("Z: "+z+", P-value: "+ p_value);
+	}
 }
+
