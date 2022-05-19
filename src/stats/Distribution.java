@@ -29,7 +29,7 @@ public class Distribution extends CalculatorFolder {
         }
     }
 
-    private static BigDecimal factorial(BigDecimal i) {
+    public static BigDecimal factorial(BigDecimal i) {
         if (i.compareTo(BigDecimal.valueOf(2)) < 0) return BigDecimal.ONE;
         return i.multiply(factorial(i.subtract(BigDecimal.ONE)));
     }
@@ -109,7 +109,7 @@ public class Distribution extends CalculatorFolder {
     }
 
     //Calculates y-value of the standardized normal curve at the given x-value
-    private static double normalpdf(double xval, double mean, double sd) {
+    public static double normalpdf(double xval, double mean, double sd) {
         return Math.pow(Math.E, -0.5*Math.pow((xval-mean)/sd, 2))/(sd*Math.sqrt(2*Math.PI));
     }
 
@@ -139,7 +139,7 @@ public class Distribution extends CalculatorFolder {
     }
 
     //Calculates x-value whose normalcdf() results in the given area
-    private static double invNorm(double area, double mean, double sd) {
+    public static double invNorm(double area, double mean, double sd) {
         double step = 0.00001 * sd; double xval;
         for (xval = 0; area>0; xval+=step) {
             area -= step * normalpdf(xval, mean, sd);
