@@ -7,10 +7,10 @@ import java.util.Scanner;
 import static java.lang.Integer.parseInt;
 
 
-public class LinearRegression implements CalculatorFolder {
-    Scanner s = new Scanner(System.in);
+public class LinearRegression extends CalculatorFolder {
+    static final Scanner s = new Scanner(System.in);
 
-    public void dialogue() {
+    public static void dialogue() {
         System.out.print("Path to csv: ");
         int[][] arr;
         try {

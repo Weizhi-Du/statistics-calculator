@@ -1,9 +1,7 @@
 package stats;
 
-public class Tests implements CalculatorFolder {
+public class Tests extends CalculatorFolder {
 
-    public void dialogue() {
-
-    }
+    public static void dialogue() {}
 
 }
