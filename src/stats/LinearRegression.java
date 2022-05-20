@@ -7,10 +7,10 @@ import java.util.Scanner;
 import static java.lang.Integer.parseInt;
 
 
-public class LinearRegression implements CalculatorFolder {
-    Scanner s = new Scanner(System.in);
+public class LinearRegression extends CalculatorFolder {
+    static final Scanner s = new Scanner(System.in);
 
-    public void dialogue() {
+    public static void dialogue() {
         System.out.print("Path to csv: ");
         int[][] arr;
         try {
@@ -18,10 +18,12 @@ public class LinearRegression implements CalculatorFolder {
         } catch (FileNotFoundException e) {
             System.out.println("Invalid path");
             return;
-        }
+        } System.out.println();
 
         System.out.println(lRegressionEquation(arr));
-        System.out.println(calculatingR(arr));
+        double r = calculatingR(arr);
+        System.out.println("R: " + r);
+        System.out.println("R^2: " + r*r);
     }
 
     public static String lRegressionEquation(int[][] arr) {

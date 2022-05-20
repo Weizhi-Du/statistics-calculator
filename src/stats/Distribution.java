@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Scanner;
 
 
-public class Distribution implements CalculatorFolder {
+public class Distribution extends CalculatorFolder {
     static final Scanner s = new Scanner(System.in);
 
-    public void dialogue() {
+    public static void dialogue() {
         System.out.println("1: normalpdf");
         System.out.println("2: normalcdf");
         System.out.println("3: invnorm");
@@ -29,7 +29,7 @@ public class Distribution implements CalculatorFolder {
         }
     }
 
-    private static BigDecimal factorial(BigDecimal i) {
+    public static BigDecimal factorial(BigDecimal i) {
         if (i.compareTo(BigDecimal.valueOf(2)) < 0) return BigDecimal.ONE;
         return i.multiply(factorial(i.subtract(BigDecimal.ONE)));
     }
@@ -49,18 +49,12 @@ public class Distribution implements CalculatorFolder {
         double lowerzval = (lower - mean)/sd;
         double upperzval = (upper - mean)/sd;
 
-        double l = 7.2; //experimental
-        if (lowerzval < -l) lowerzval = -l;
-        if (lowerzval > l) lowerzval = l;
-        if (upperzval < -l) upperzval = -l;
-        if (upperzval > l) upperzval = l;
-
         long taylorStart = System.currentTimeMillis();
-        System.out.println("Area: " + normalcdf(upperzval).subtract(normalcdf(lowerzval)));
+        System.out.println("Area: " + normalcdf(lowerzval, upperzval));
         long taylorRuntime = System.currentTimeMillis()-taylorStart;
 
         long riemannStart = System.currentTimeMillis();
-        System.out.println("Riemann Area: " + (normalcdf2(upperzval) - normalcdf2(lowerzval)));
+        System.out.println("Riemann Area: " + normalcdf2(lowerzval, upperzval));
         long riemannRuntime = System.currentTimeMillis()-riemannStart;
 
         System.out.println("Taylor Series Approximation Time: " + taylorRuntime + "ms");
@@ -68,8 +62,11 @@ public class Distribution implements CalculatorFolder {
         System.out.println();
     }
 
+    public static BigDecimal normalcdf(double lowerz, double upperz) { return normalcdf(upperz).subtract(normalcdf(lowerz)); }
+
     //Calculates area from center of the standardized normal curve to the given z-value
-    private static BigDecimal normalcdf(double zval) {
+    public static BigDecimal normalcdf(double zval) {
+        if (Math.abs(zval) > 7.2) zval = Math.signum(zval) * 7.2;
         final MathContext c = new MathContext(16, RoundingMode.DOWN);
         final BigDecimal errorBound = BigDecimal.valueOf(0.00000001);
         final double root2pi = Math.sqrt(2*Math.PI);
@@ -85,8 +82,10 @@ public class Distribution implements CalculatorFolder {
         } return sum;
     }
 
+    public static double normalcdf2(double lowerz, double upperz) { return normalcdf2(upperz) - normalcdf2(lowerz); }
+
     //normalcdf() but faster using a Riemann sum
-    private static double normalcdf2(double zval) {
+    public static double normalcdf2(double zval) {
         double rightzval = Math.abs(zval);
         boolean right = zval>0;
         double step = 0.00001;
@@ -109,7 +108,7 @@ public class Distribution implements CalculatorFolder {
     }
 
     //Calculates y-value of the standardized normal curve at the given x-value
-    private static double normalpdf(double xval, double mean, double sd) {
+    public static double normalpdf(double xval, double mean, double sd) {
         return Math.pow(Math.E, -0.5*Math.pow((xval-mean)/sd, 2))/(sd*Math.sqrt(2*Math.PI));
     }
 
@@ -123,10 +122,12 @@ public class Distribution implements CalculatorFolder {
         String position = s.next().substring(0, 1).toUpperCase(Locale.ROOT);
         System.out.print("Area: ");
         double area = s.nextDouble();
+
         if (area < 0 || area > 1) {
             System.out.println("Invalid input area: " + area); return;
-        } double adjustedArea = area - 0.5;
-        System.out.println();
+        } System.out.println();
+
+        double adjustedArea = area - 0.5;
 
         switch (position) {
             case "L": System.out.println("X-Val: " + Math.signum(adjustedArea) * invNorm(Math.abs(adjustedArea), mean, sd)); break;
@@ -137,8 +138,8 @@ public class Distribution implements CalculatorFolder {
     }
 
     //Calculates x-value whose normalcdf() results in the given area
-    private static double invNorm(double area, double mean, double sd) {
-        double step = 0.00001; double xval;
+    public static double invNorm(double area, double mean, double sd) {
+        double step = 0.00001 * sd; double xval;
         for (xval = 0; area>0; xval+=step) {
             area -= step * normalpdf(xval, mean, sd);
         } return xval + mean;
