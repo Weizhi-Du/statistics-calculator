@@ -11,14 +11,13 @@ public class Tests extends CalculatorFolder {
 
 	public static void dialogue() {
 		System.out.println("1: one_prop_z_test");
-        System.out.print("#");
-		int f = s.nextInt();
+        System.out.print("#"); int f = s.nextInt();
 		System.out.println();
 
 		switch (f) {
 			case 1: one_prop_z_test(); break;
 			default:
-				System.out.println("Invalid Selection");
+				System.out.println("Invalid Selection\n");
 				dialogue();
 		}
 	}
@@ -32,6 +31,7 @@ public class Tests extends CalculatorFolder {
 		double n = s.nextDouble();
 		System.out.print("Alternative Hypothesis: (prop<p0 enter '-1'; prop>p0 enter '1'; prop≠p0 enter '0') ");
 		int altHypo = s.nextInt();
+		System.out.println();
 
 		one_prop_z_test(p0, x, n, altHypo);
 	}

@@ -14,8 +14,7 @@ public class Distribution extends CalculatorFolder {
         System.out.println("1: normalpdf");
         System.out.println("2: normalcdf");
         System.out.println("3: invnorm");
-        System.out.print("#");
-        int f = s.nextInt();
+        System.out.print("#"); int f = s.nextInt();
         System.out.println();
 
         switch (f) {
@@ -23,8 +22,7 @@ public class Distribution extends CalculatorFolder {
             case 2: normalcdf(); break;
             case 3: invNorm(); break;
             default:
-                System.out.println("Invalid Selection");
-                System.out.println();
+                System.out.println("Invalid Selection\n");
                 dialogue();
         }
     }
@@ -59,7 +57,6 @@ public class Distribution extends CalculatorFolder {
 
         System.out.println("Taylor Series Approximation Time: " + taylorRuntime + "ms");
         System.out.println("Riemann Sum Approximation Time: " + riemannRuntime + "ms");
-        System.out.println();
     }
 
     public static BigDecimal normalcdf(double lowerz, double upperz) { return normalcdf(upperz).subtract(normalcdf(lowerz)); }
@@ -103,6 +100,7 @@ public class Distribution extends CalculatorFolder {
         double sd = s.nextDouble();
         System.out.print("X-Val: ");
         double xval = s.nextDouble();
+        System.out.println();
 
         System.out.println("PDF: " + normalpdf(xval, mean, sd));
     }
@@ -125,7 +123,7 @@ public class Distribution extends CalculatorFolder {
 
         if (area < 0 || area > 1) {
             System.out.println("Invalid input area: " + area); return;
-        } System.out.println();
+        }
 
         double adjustedArea = area - 0.5;
 
@@ -134,7 +132,7 @@ public class Distribution extends CalculatorFolder {
             case "R": System.out.println("X-Val: " + (-1) * Math.signum(adjustedArea) * invNorm(Math.abs(adjustedArea), mean, sd)); break;
             case "C": System.out.println("X-Val: " + invNorm(area/2, mean, sd)); break;
             default: System.out.println("Invalid position input: " + position);
-        } System.out.println();
+        }
     }
 
     //Calculates x-value whose normalcdf() results in the given area
